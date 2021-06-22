@@ -4,54 +4,35 @@ import TextField from '@material-ui/core/TextField';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
-import RegisterService from '../services/RegisterService';
-class Register extends React.Component {
+import {register} from '../services/RegisterService';
+export default function Register() {
+  
+  const [email,setEmail] = React.useState("")
+  const [firstName,setFirstName] = React.useState("")
+  const [lastName,setLastName] = React.useState("")
+  const [phone,setPhone] = React.useState("")
+  const [password,setPassword] = React.useState("")
+  const isEnabled = (email.length > 0 && firstName.length>0 && lastName.length > 0 && phone.length>0 && password.length>0)
 
-  constructor(props){
-    super(props)
-    this.state = {
-      email : props.email,
-      firstName : props.firstName,
-      lastName : props.lastName,
-      phone : props.phone,
-      password : props.password
-    }
-  }
-handleEmailChange = (e) => {
-    this.setState({email: e.target.value});
- }
- handleFirstNameChange = (e) => {
-  this.setState({firstName: e.target.value});
-}
-handleLastNameChange = (e) => {
-  this.setState({lastName: e.target.value});
-}
-handlePhoneChange = (e) => {
-  this.setState({phone: e.target.value});
-}
-handlePasswordChange = (e) => {
-  this.setState({password: e.target.value});
-}
-
-  onButtonClick = () => {
-    console.log("on click");
+  const onButtonClick = (e) => {
+    e.preventDefault();
     let userData = {
-      firstName : this.state.firstName,
-      lastName : this.state.lastName,
-      emailId : this.state.email,
-      password : this.state.password,
-      phoneno : this.state.phone
+      firstName : firstName,
+      lastName : lastName,
+      emailId : email,
+      password : password,
+      phoneno : phone
     }
-    RegisterService.addUser(userData)
+    console.log(userData);
+    register(userData)
   }
 
-  render(){
     return (
       <div>
         <br></br><br></br>
       <Container component="main" maxWidth="xs">
         <div>
-          <form noValidate>
+          <form>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -61,8 +42,8 @@ handlePasswordChange = (e) => {
                   required
                   fullWidth
                   label="First Name"
-                  value={this.state.firstName} 
-                  onChange={this.handleFirstNameChange}
+                  value={firstName} 
+                  onChange={(e) => setFirstName(e.target.value)}
                   autoFocus
                 />
               </Grid>
@@ -73,20 +54,21 @@ handlePasswordChange = (e) => {
                   fullWidth
                   label="Last Name"
                   name="lastName"
-                  value={this.state.lastName} 
-                  onChange={this.handleLastNameChange}
+                  value={lastName} 
+                  onChange={(e) => setLastName(e.target.value)}
                   autoComplete="lname"
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
+                  type="email"
                   variant="outlined"
                   required
                   fullWidth
                   label="Email Address"
                   name="email"
-                  value={this.state.email} 
-                  onChange={this.handleEmailChange}
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)}
                   autoComplete="email"
                 />
                 </Grid>
@@ -97,8 +79,8 @@ handlePasswordChange = (e) => {
                   fullWidth
                   label="Phone Number"
                   name="phoneNumber"
-                  value={this.state.phone} 
-                  onChange={this.handlePhoneChange}
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   autoComplete="Phone number"
                 />
               </Grid>
@@ -110,8 +92,8 @@ handlePasswordChange = (e) => {
                   name="password"
                   label="Password"
                   type="password"
-                  value={this.state.password} 
-                  onChange={this.handlePasswordChange}
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)}
                   autoComplete="current-password"
                 />
               </Grid>
@@ -122,14 +104,15 @@ handlePasswordChange = (e) => {
               fullWidth
               variant="contained"
               color="primary"
-              onClick={this.onButtonClick}
+              disabled={!isEnabled}
+              onClick={onButtonClick}
             >
               Sign Up
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                <Link href="/login" variant="body2">
+                  Already have an account? Log in
                 </Link>
               </Grid>
             </Grid>
@@ -139,6 +122,3 @@ handlePasswordChange = (e) => {
       </div>
     );
     }
-}
-
-export default Register

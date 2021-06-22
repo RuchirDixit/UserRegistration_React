@@ -2,8 +2,6 @@ import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -11,6 +9,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import {loginService} from '../services/LoginService';
+import { Redirect,useHistory } from 'react-router-dom';
+
 
 function Copyright() {
   return (
@@ -47,6 +48,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
+  const history = useHistory();
+
+  const [emailId,setEmailId] = React.useState("")
+  const [password,setPassword] = React.useState("")
+
+  const onLoginClicked= async(e) => {
+    e.preventDefault()
+    console.log("on login");
+   const status = await loginService(emailId,password);
+   localStorage.setItem("token",status.token)
+   if(status.statusCode == 200){
+     history.push("/success");
+   }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -63,9 +78,10 @@ export default function Login() {
             margin="normal"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
+            value={emailId}
+            onChange={(e) => setEmailId(e.target.value)}
             autoComplete="email"
             autoFocus
           />
@@ -77,7 +93,8 @@ export default function Login() {
             name="password"
             label="Password"
             type="password"
-            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <Button
@@ -86,6 +103,7 @@ export default function Login() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={onLoginClicked}
           >
             Sign In
           </Button>
